@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
@@ -14,7 +15,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, 'Password is required'],
-      minlength: [8, 'Password must be at least 8 characters long']
+      minlength: [5, 'Password must be at least 8 characters long']
     },
     username: {
       type: String,
@@ -35,6 +36,9 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('save', function saveUser(next) {
   const user = this;
+  const SALT = bcrypt.genSaltSync(9);
+  const hashedpassword = bcrypt.hashSync(user.password, SALT);
+  user.password = hashedpassword;
   user.avatar = `https://robohash.org/${user.username}`;
   next();
 });
