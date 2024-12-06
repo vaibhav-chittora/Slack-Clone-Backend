@@ -10,18 +10,18 @@ export const successResponse = (data, message) => {
 export const internalServerErrorResponse = (error) => {
   return {
     success: false,
-    error: error.message,
+    error: error,
     message: 'Internal Server Error',
     data: {}
   };
 };
 export const customErrorResponse = (error) => {
-  if (!error.statusCode && !error.explaination) {
+  if (!error.message && !error.explaination) {
     return internalServerErrorResponse(error);
   }
   return {
     success: false,
-    error: error.explaination,
+    err: error.explanation,
     message: error.message,
     data: {}
   };

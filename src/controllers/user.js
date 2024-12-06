@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { signUpService } from '../services/user.js';
 import {
   customErrorResponse,
+  internalServerErrorResponse,
   successResponse
 } from '../utils/common/responseObjects.js';
 
@@ -19,6 +20,6 @@ export const signUp = async (req, res) => {
     }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json(customErrorResponse(error));
+      .json(internalServerErrorResponse(error));
   }
 };
