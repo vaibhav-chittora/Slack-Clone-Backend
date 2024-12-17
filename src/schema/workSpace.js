@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const workSpaceSchema = new mongoose.model(
+const workSpaceSchema = new mongoose.Schema(
   {
     name: {
       type: String,

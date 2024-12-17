@@ -1,9 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
-import WorkSpace from '../schema/workspace';
-import ClientError from '../utils/erros/clientError';
-import crudRepository from './crudRepository';
-import User from '../schema/user';
-import channelRepository from './channel';
+
+import User from '../schema/user.js';
+import WorkSpace from '../schema/workSpace.js';
+import ClientError from '../utils/erros/clientError.js';
+import channelRepository from './channel.js';
+import crudRepository from './crudRepository.js';
 
 const workSpaceRepository = {
   ...crudRepository(WorkSpace),
@@ -22,7 +23,7 @@ const workSpaceRepository = {
   },
 
   getWorkSpaceByJoinCode: async function (joinCode) {
-    const workspace = await workspace.findOne({ joinCode });
+    const workspace = await WorkSpace.findOne({ joinCode });
 
     if (!workspace) {
       throw new ClientError({
@@ -59,11 +60,11 @@ const workSpaceRepository = {
       (member) => member.memberId == memberId
     );
 
-    if (!isMemberAlreadyPartOfWorkSpace) {
+    if (isMemberAlreadyPartOfWorkSpace) {
       throw new ClientError({
-        explanation: 'Invalid data sent from the client ',
         message: 'User is already the part of workspace',
-        statusCode: StatusCodes.FORBIDDEN
+        statusCode: StatusCodes.FORBIDDEN,
+        explanation: 'Invalid data sent from the client '
       });
     }
 
@@ -77,7 +78,7 @@ const workSpaceRepository = {
     return workspace;
   },
 
-  addChannelToWorkSpace: async function (workspaceId, channelName, memberId) {
+  addChannelToWorkSpace: async function (workspaceId, channelName) {
     const workspace =
       await WorkSpace.findById(workspaceId).populate('channels');
 
@@ -92,7 +93,7 @@ const workSpaceRepository = {
       (channel) => channel.name == channelName
     );
 
-    if (!isChannelALreadyPartOfWorkspace) {
+    if (isChannelALreadyPartOfWorkspace) {
       throw new ClientError({
         explanation: 'Invalid data sent from the client ',
         message: 'Channel already part of workspace',
