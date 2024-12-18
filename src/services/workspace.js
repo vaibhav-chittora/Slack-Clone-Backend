@@ -1,6 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
 import { v4 as uuidv4 } from 'uuid';
 
+import channelRepository from '../repositories/channel.js';
 import workSpaceRepository from '../repositories/workSpace.js';
+import ClientError from '../utils/erros/clientError.js';
 import ValidationError from '../utils/erros/validationError.js';
 
 export const createWorkspace = async (workspaceData) => {
@@ -54,10 +57,39 @@ export const getWorkspacesUserIsMemberOfService = async (memberId) => {
   }
 };
 
-// export const deleteWorkspace = async (memberId) => {
-//   try {
-//   } catch (error) {
-//     console.log('Error in Delete workspace service - ', error);
-//     throw error;
-//   }
-// };
+export const deleteWorkspaceService = async (workspaceId, userId) => {
+  try {
+    const workspace = await workSpaceRepository.getById(workspaceId);
+
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        StatusCode: StatusCodes.NOT_FOUND,
+        message: 'No workspace found'
+      });
+    }
+
+    // console.log(workspace.members.memberId.toString());
+    const isAllowedToDelete = workspace.members.find(
+      (member) =>
+        member.memberId.toString() === userId && member.role === 'admin'
+    );
+
+    if (isAllowedToDelete) {
+      await channelRepository.deleteMany(workspace.channels);
+
+      const deletedResponse = await workSpaceRepository.delete(workspaceId);
+      return deletedResponse;
+    }
+
+    throw new ClientError({
+      explanation:
+        'User is either not an admin OR maybe not a part of the workspace. ',
+      StatusCode: StatusCodes.UNAUTHORIZED,
+      message: 'User is not allowed to delete the workspace'
+    });
+  } catch (error) {
+    console.log('Error in delete Workspace service -', error);
+    throw error;
+  }
+};
