@@ -1,6 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { createWorkspace as createWorkspaceService } from '../services/workSpace.js';
+import {
+  createWorkspace as createWorkspaceService,
+  getWorkspacesUserIsMemberOfService
+} from '../services/workspace.js';
 import {
   customErrorResponse,
   internalServerErrorResponse,
@@ -22,6 +25,24 @@ export const createWorkSpaceController = async (req, res) => {
 
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrorResponse(error));
+  }
+};
+
+export const getWorkspacesUserIsMemberOfController = async (req, res) => {
+  try {
+    const workspaces = await getWorkspacesUserIsMemberOfService(req.user);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(workspaces, 'Workspaces fetched successfully'));
+  } catch (error) {
+    console.log('Error in getWorkspacesUserIsMemberOfController', error);
+    if (error.statusCode) {
+      res.status(error.statusCode).json(customErrorResponse(error));
     }
 
     return res

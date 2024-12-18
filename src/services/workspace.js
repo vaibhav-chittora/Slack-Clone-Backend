@@ -40,3 +40,24 @@ export const createWorkspace = async (workspaceData) => {
     }
   }
 };
+
+export const getWorkspacesUserIsMemberOfService = async (memberId) => {
+  try {
+    const workspaces =
+      await workSpaceRepository.fetchAllWorkSpacesByMemberId(memberId);
+
+    return workspaces;
+  } catch (error) {
+    console.log('Error in getAllWorkspaces service - ', error);
+
+    throw error;
+  }
+};
+
+// export const deleteWorkspace = async (memberId) => {
+//   try {
+//   } catch (error) {
+//     console.log('Error in Delete workspace service - ', error);
+//     throw error;
+//   }
+// };
