@@ -9,6 +9,14 @@ import crudRepository from './crudRepository.js';
 const workSpaceRepository = {
   ...crudRepository(WorkSpace),
 
+  getWorkspaceDetailsById: async function (workspaceId) {
+    const workSpaceDetails = await WorkSpace.findById(workspaceId)
+      .populate('members.membersId ', 'username email avatar')
+      .populate('channels');
+
+    return workSpaceDetails;
+  },
+
   getWorkSpaceByName: async function (workspaceName) {
     const workspace = await WorkSpace.findOne({ name: workspaceName });
     if (!workspace) {
