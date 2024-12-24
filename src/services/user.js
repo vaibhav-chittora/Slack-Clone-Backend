@@ -3,8 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import userRepository from '../repositories/user.js';
 import { createJWT } from '../utils/common/authUtils.js';
-import ClientError from '../utils/erros/clientError.js';
-import ValidationError from '../utils/erros/validationError.js';
+import ClientError from '../utils/errors/clientError.js';
+import ValidationError from '../utils/errors/validationError.js';
 
 export const signUpService = async (data) => {
   try {

@@ -4,7 +4,7 @@ const workSpaceSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Workspace name is required'],
       unique: true
     },
     description: {
@@ -26,7 +26,8 @@ const workSpaceSchema = new mongoose.Schema(
     ],
     joinCode: {
       type: String,
-      unique: true
+      required: [true, 'Join code is required']
+      // unique: true
     },
     channels: [
       {

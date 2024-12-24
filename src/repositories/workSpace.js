@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import User from '../schema/user.js';
 import WorkSpace from '../schema/workSpace.js';
-import ClientError from '../utils/erros/clientError.js';
+import ClientError from '../utils/errors/clientError.js';
 import channelRepository from './channel.js';
 import crudRepository from './crudRepository.js';
 
@@ -11,9 +11,10 @@ const workSpaceRepository = {
 
   getWorkspaceDetailsById: async function (workspaceId) {
     const workSpaceDetails = await WorkSpace.findById(workspaceId)
-      .populate('members.membersId ', 'username email avatar')
+      .populate('members.memberId', 'username avatar email')
       .populate('channels');
 
+    // console.log('Workspace Details in repsoitry', workSpaceDetails);
     return workSpaceDetails;
   },
 
@@ -98,7 +99,7 @@ const workSpaceRepository = {
       });
     }
     const isChannelALreadyPartOfWorkspace = workspace.channels.find(
-      (channel) => channel.name == channelName
+      (channel) => channel.name === channelName
     );
 
     if (isChannelALreadyPartOfWorkspace) {
@@ -109,7 +110,10 @@ const workSpaceRepository = {
       });
     }
 
-    const channel = await channelRepository.create({ name: channelName });
+    const channel = await channelRepository.create({
+      name: channelName,
+      workspaceId: workspaceId
+    });
 
     workspace.channels.push(channel);
 
@@ -121,7 +125,7 @@ const workSpaceRepository = {
   fetchAllWorkSpacesByMemberId: async function (memberId) {
     const workspace = await WorkSpace.find({
       'members.memberId': memberId
-    }).populate('members.memberId', 'username, email avatar');
+    }).populate('members.memberId', 'username email avatar');
 
     return workspace;
   }
