@@ -24,7 +24,7 @@ export const isUserMemberOfWorkspace = (workspace, userId) => {
   });
 };
 
-const isChannelALreadyPartOfWorkspace = (workspace, channelName) => {
+export const isChannelALreadyPartOfWorkspace = (workspace, channelName) => {
   return workspace.channels.find(
     (channel) => channel.name.toLowerCase() === channelName.toLowerCase()
   );
