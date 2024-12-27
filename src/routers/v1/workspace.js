@@ -11,7 +11,11 @@ import {
   updateWorkspaceController
 } from '../../controllers/workspace.js';
 import { isAuthenticated } from '../../middlewares/authMiddleware.js';
-import { createWorkSpaceSchema } from '../../validators/workSpaceSchema.js';
+import {
+  addChannelToWorkSpaceSchema,
+  addMemberToWorkSpaceSchema,
+  createWorkSpaceSchema
+} from '../../validators/workSpaceSchema.js';
 import { validate } from '../../validators/zodValidator.js';
 
 const router = express.Router();
@@ -46,6 +50,7 @@ router.put('/:workspaceId', isAuthenticated, updateWorkspaceController);
 router.put(
   '/:workspaceId/members',
   isAuthenticated,
+  validate(addMemberToWorkSpaceSchema),
   addMemberToWorkspaceController
 );
 
@@ -53,6 +58,7 @@ router.put(
 router.put(
   '/:workspaceId/channels',
   isAuthenticated,
+  validate(addChannelToWorkSpaceSchema),
   addChannelToWorkspaceController
 );
 
