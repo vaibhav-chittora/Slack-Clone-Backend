@@ -1,9 +1,12 @@
+import './processors/mailProcessor.js';
+
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { connectDB } from './config/dbConfig.js';
 import { PORT } from './config/serverConfig.js';
 import apiRouter from './routers/apiRouter.js';
+
 const app = express();
 
 app.use(express.json());
