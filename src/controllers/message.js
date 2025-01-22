@@ -1,10 +1,11 @@
 import { StatusCodes } from 'http-status-codes';
-import { getMessagesService } from '../services/message';
+
+import { getMessagesService } from '../services/message.js';
 import {
   customErrorResponse,
   internalServerErrorResponse,
   successResponse
-} from '../utils/common/responseObjects';
+} from '../utils/common/responseObjects.js';
 
 export const getMessagesController = async (req, res) => {
   try {
