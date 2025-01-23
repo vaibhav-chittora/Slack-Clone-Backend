@@ -19,10 +19,10 @@ const messageSchema = new mongoose.Schema(
       ref: 'Channel',
       required: [true, 'Channel Id is required']
     },
-    workSpaceId: {
+    workspaceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'WorkSpace',
-      required: [true, 'WorkSpace Id is required']
+      required: [true, 'Workspace Id is required']
     }
   },
   { timestamps: true }
