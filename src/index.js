@@ -8,7 +8,8 @@ import { Server } from 'socket.io';
 import bullServerAdapter from './config/bullBoardConfig.js';
 import { connectDB } from './config/dbConfig.js';
 import { PORT } from './config/serverConfig.js';
-import { messageHandlers } from './controllers/messageSocketController.js';
+import channelSocketHandler from './controllers/channelSocketController.js';
+import messageSocketHandler from './controllers/messageSocketController.js';
 import apiRouter from './routers/apiRouter.js';
 
 const app = express();
@@ -35,7 +36,8 @@ io.on('connection', (socket) => {
 
   //   io.emit('newMessage', data.toUpperCase());
   // });
-  messageHandlers(io, socket);
+  messageSocketHandler(io, socket);
+  channelSocketHandler(io, socket);
 });
 
 server.listen(PORT, () => {
