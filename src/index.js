@@ -11,6 +11,7 @@ import { PORT } from './config/serverConfig.js';
 import channelSocketHandler from './controllers/channelSocketController.js';
 import messageSocketHandler from './controllers/messageSocketController.js';
 import apiRouter from './routers/apiRouter.js';
+import cors from 'cors';
 
 const app = express();
 const server = createServer(app);
@@ -19,6 +20,7 @@ const io = new Server(server);
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use('/ui', bullServerAdapter.getRouter());
 
