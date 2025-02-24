@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createWorkSpaceSchema = z.object({
-  name: z.string().min(3).max(10)
+  name: z.string().min(3)
 });
 
 export const addMemberToWorkSpaceSchema = z.object({
