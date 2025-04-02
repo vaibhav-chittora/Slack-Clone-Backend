@@ -119,7 +119,8 @@ export const deleteWorkspaceService = async (workspaceId, userId) => {
 
 export const getWorkspaceService = async (workspaceId, userId) => {
   try {
-    const workspace = await workSpaceRepository.getById(workspaceId);
+    const workspace =
+      await workSpaceRepository.getWorkspaceDetailsById(workspaceId);
 
     if (!workspace) {
       throw new ClientError({
@@ -129,6 +130,7 @@ export const getWorkspaceService = async (workspaceId, userId) => {
       });
     }
 
+    console.log('Workspace in service - ', workspace);
     const IsMember = isUserMemberOfWorkspace(workspace, userId);
 
     if (!IsMember) {
