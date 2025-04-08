@@ -350,3 +350,40 @@ export const addChannelToWorkSpaceService = async (
     throw error;
   }
 };
+
+export const joinWorkspaceService = async (workspaceId, joincode, userId) => {
+  try {
+    const workspace =
+      await workSpaceRepository.getWorkspaceDetailsById(workspaceId);
+
+    if (!workspace) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        StatusCode: StatusCodes.NOT_FOUND,
+        message: 'No workspace found'
+      });
+    }
+
+    // checking if the join code is valid or not
+    if (workspace.joinCode !== joincode) {
+      throw new ClientError({
+        explanation: 'Invalid data sent from the client',
+        StatusCode: StatusCodes.NOT_FOUND,
+        message: 'Invalid join code'
+      });
+    }
+
+    // checking if the user is already a member of the workspace or not
+    // checking a member is already done in repository layer
+
+    const updatedWorkspace = await workSpaceRepository.addMemberToWorkSpace(
+      workspaceId,
+      userId,
+      'member'
+    );
+    return updatedWorkspace;
+  } catch (error) {
+    console.log('joinWorkspaceService Error', error);
+    throw error;
+  }
+};
