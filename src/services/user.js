@@ -5,10 +5,22 @@ import userRepository from '../repositories/user.js';
 import { createJWT } from '../utils/common/authUtils.js';
 import ClientError from '../utils/errors/clientError.js';
 import ValidationError from '../utils/errors/validationError.js';
+import { ENABLE_EMAIL_VERIFICATION } from '../config/serverConfig.js';
+import { addEmailToMailQueue } from '../producers/mailQueueProducer.js';
+import { verifyEmailMail } from '../utils/common/mailObject.js';
 
 export const signUpService = async (data) => {
   try {
-    const newUser = await userRepository.create(data);
+    const newUser = await userRepository.signUpUser(data);
+
+    if (ENABLE_EMAIL_VERIFICATION === 'true') {
+      // send verification email
+      addEmailToMailQueue({
+        ...verifyEmailMail(newUser.verificationToken),
+        to: newUser.email
+      });
+    }
+
     return newUser;
   } catch (error) {
     console.log('User Service Error', error);
@@ -56,6 +68,38 @@ export const signInService = async (data) => {
   } catch (error) {
     console.log('User SignIn Service Error', error);
 
+    throw error;
+  }
+};
+
+export const verifyTokenService = async (token) => {
+  try {
+    const user = await userRepository.getByToken(token);
+    if (!user) {
+      throw new ClientError({
+        message: 'Invalid Token',
+        explanation: 'Invalid Token',
+        status: StatusCodes.BAD_REQUEST
+      });
+    }
+    // check if the verification token is expired or not
+    if (user.verificationTokenExpiry < Date.now()) {
+      throw new ClientError({
+        message: 'Verification Token has Expired',
+        explanation: 'Verification Token has Expired',
+        status: StatusCodes.BAD_REQUEST
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = null;
+    user.verificationTokenExpiry = null;
+
+    await user.save();
+
+    return user;
+  } catch (error) {
+    console.log('User SignIn Service Error', error);
     throw error;
   }
 };

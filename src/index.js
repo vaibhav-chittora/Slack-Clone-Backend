@@ -12,6 +12,7 @@ import channelSocketHandler from './controllers/channelSocketController.js';
 import messageSocketHandler from './controllers/messageSocketController.js';
 import apiRouter from './routers/apiRouter.js';
 import cors from 'cors';
+import { verifyEmailController } from './controllers/workspace.js';
 
 const app = express();
 const server = createServer(app);
@@ -29,6 +30,8 @@ app.get('/ping', (req, res) => {
 });
 
 app.use('/api', apiRouter);
+
+app.get('/verify/:token', verifyEmailController);
 
 io.on('connection', (socket) => {
   // console.log('a user connected', socket.id);

@@ -17,6 +17,7 @@ import {
   internalServerErrorResponse,
   successResponse
 } from '../utils/common/responseObjects.js';
+import { verifyTokenService } from '../services/user.js';
 
 export const createWorkSpaceController = async (req, res) => {
   try {
@@ -237,6 +238,23 @@ export const joinWorkspaceController = async (req, res) => {
       .json(successResponse(response, 'Joined workspace successfully.'));
   } catch (error) {
     console.log('joinWorkspaceController Error -', error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrorResponse(error));
+  }
+};
+
+export const verifyEmailController = async (req, res) => {
+  try {
+    const response = await verifyTokenService(req.params.token);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, 'Email verified successfully.'));
+  } catch (error) {
+    console.log('verifyEmailController Error -', error);
     if (error.statusCode) {
       return res.status(error.statusCode).json(customErrorResponse(error));
     }
