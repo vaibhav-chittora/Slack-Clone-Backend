@@ -1,5 +1,6 @@
 import './processors/mailProcessor.js';
 
+import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import { StatusCodes } from 'http-status-codes';
@@ -10,13 +11,16 @@ import { connectDB } from './config/dbConfig.js';
 import { PORT } from './config/serverConfig.js';
 import channelSocketHandler from './controllers/channelSocketController.js';
 import messageSocketHandler from './controllers/messageSocketController.js';
-import apiRouter from './routers/apiRouter.js';
-import cors from 'cors';
 import { verifyEmailController } from './controllers/workspace.js';
+import apiRouter from './routers/apiRouter.js';
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: '*'
+  }
+});
 
 app.use(express.json());
 app.use(express.text());
