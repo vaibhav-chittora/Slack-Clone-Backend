@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
+import { verifyTokenService } from '../services/user.js';
 import {
   addChannelToWorkSpaceService,
   addMemberToWorkspaceService,
@@ -17,7 +18,6 @@ import {
   internalServerErrorResponse,
   successResponse
 } from '../utils/common/responseObjects.js';
-import { verifyTokenService } from '../services/user.js';
 
 export const createWorkSpaceController = async (req, res) => {
   try {
